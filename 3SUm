@@ -1,0 +1,48 @@
+from typing import List
+
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        results = []
+        # 1. Sort the array. This is crucial for the two-pointer
+        #    technique and for skipping duplicates.
+        nums.sort()
+        n = len(nums)
+
+        for i in range(n - 2):  # n-2 because we need 2 more elements (left/right)
+            
+            # 2. Skip duplicate values for 'i' (the first element)
+            # If this 'i' is the same as the previous 'i', we've
+            # already processed all triplets starting with it.
+            if i > 0 and nums[i] == nums[i-1]:
+                continue
+
+            # 3. Set up the two pointers
+            left, right = i + 1, n - 1
+
+            while left < right:
+                total_sum = nums[i] + nums[left] + nums[right]
+
+                if total_sum == 0:
+                    # Found a triplet!
+                    results.append([nums[i], nums[left], nums[right]])
+
+                    # 4. Skip duplicates for the 'left' and 'right' pointers
+                    # Move 'left' forward as long as it's the same value
+                    while left < right and nums[left] == nums[left + 1]:
+                        left += 1
+                    # Move 'right' backward as long as it's the same value
+                    while left < right and nums[right] == nums[right - 1]:
+                        right -= 1
+                    
+                    # Move pointers inward to find the next potential pair
+                    left += 1
+                    right -= 1
+                
+                elif total_sum < 0:
+                    # Sum is too small, need a larger number. Move the left pointer.
+                    left += 1
+                else:  # total_sum > 0
+                    # Sum is too large, need a smaller number. Move the right pointer.
+                    right -= 1
+        
+        return results
